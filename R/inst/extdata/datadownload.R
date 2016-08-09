@@ -36,11 +36,14 @@ for(i in 1:length(tv_shows)) {
 
 shows <- bind_rows(all_shows)
 
-save(shows, file = "data/shows.rda")
-
-getwd()
+# getwd()
 # Check data validity.
-lapply(shows, {function(x) return(sum(is.na(x)))})
+# lapply(shows, {function(x) return(sum(is.na(x)))})
 
 shows %>% filter(!is.na(episode)) -> shows
-shows %>% mutate(air_date = as_date(air_date)) -> shows
+shows %>% mutate(show = ifelse(show == "Agenci T.A.R.C.Z.Y.", "Agents of S.H.I.E.L.D.",
+                        ifelse(show == "Agentka Carter", "Agent Carter", show))) -> shows
+
+save(shows, file = "data/shows.rda")
+
+# shows %>% mutate(air_date = as_date(air_date)) -> shows
