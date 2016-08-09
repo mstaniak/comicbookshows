@@ -14,5 +14,8 @@ get_seasons_links <- function(show_link) {
     html_attr("href") %>%
     as.data.frame() %>%
     filter(grepl(., pattern = "season")) -> seasons
-    unlist(str_split(paste0("https://imdb.com", unlist(seasons)), "&", n = 1))
+  str_split(paste0("http://www.imdb.com", unlist(seasons)), "&") %>%
+    lapply({function(x) return(x[1])}) %>%
+    unlist() %>%
+    sort()
 }
