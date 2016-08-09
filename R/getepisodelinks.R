@@ -7,5 +7,5 @@
 #' @export
 
 get_episodes_links <- function(seasons) {
-  apply(data.frame(seasons), 1, get_one_season)
+  unlist(lapply(seasons, get_one_season))
 }

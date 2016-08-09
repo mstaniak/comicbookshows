@@ -11,5 +11,7 @@ LazyData: true
 Imports:
     stringr,
     dplyr,
-    rvest
+    rvest,
+    lubridate,
+    tibble
 RoxygenNote: 5.0.1
