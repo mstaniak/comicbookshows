@@ -33,11 +33,11 @@ one_episode_info <- function(ep_link) {
   ep <- seasep[2]
 
   tmp_panel %>%
-    html_node("meta") %>%
-    html_attr("content") -> emis_date
+    html_nodes("meta") %>%
+    html_attr("content") %>%
+    last() -> emis_date
 
   tmp_panel %>%
-    # html_node(".title_wraper") %>%
     html_node("h1") %>%
     html_text() -> ep_title
 

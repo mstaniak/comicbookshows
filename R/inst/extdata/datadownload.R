@@ -47,3 +47,9 @@ shows %>% mutate(show = ifelse(show == "Agenci T.A.R.C.Z.Y.", "Agents of S.H.I.E
 save(shows, file = "data/shows.rda")
 
 # shows %>% mutate(air_date = as_date(air_date)) -> shows
+
+shows %>%
+  mutate(data2 = as_date(air_date)) %>%
+  filter(is.na(data2)) %>%
+  select(show) %>%
+  distinct()
