@@ -4,7 +4,7 @@
 \alias{get_seasons_links}
 \title{Get links to all seasons for a given show.}
 \usage{
-get_seasons_links(show_link)
+get_seasons_links(show_link, no_of_seasons)
 }
 \arguments{
 \item{show_link}{Link to the show's main page in IMDb.}

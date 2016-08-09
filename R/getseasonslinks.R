@@ -7,7 +7,7 @@
 #' @export
 #'
 
-get_seasons_links <- function(show_link) {
+get_seasons_links <- function(show_link, no_of_seasons) {
   read_html(show_link) %>%
     html_nodes(".seasons-and-year-nav") %>%
     html_nodes("a") %>%
@@ -17,5 +17,6 @@ get_seasons_links <- function(show_link) {
   str_split(paste0("http://www.imdb.com", unlist(seasons)), "&") %>%
     lapply({function(x) return(x[1])}) %>%
     unlist() %>%
-    sort()
+    sort() -> seasons_raw
+  return(seasons_raw[1:no_of_seasons])
 }
