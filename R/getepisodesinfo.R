@@ -15,7 +15,7 @@ get_episodes_info <- function(eps_links) {
     mutate(cancelled = as.logical(cancelled),
            # season = as.factor(season),
            # episode = as.factor(episode),
-           air_date = as_date(air_date),
+           # air_date = as_date(air_date),
            rating = as.numeric(rating),
            num_of_votes = as.integer(str_replace(num_of_votes, pattern = ",", replacement = ""))) %>%
     as_tibble()

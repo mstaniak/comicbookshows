@@ -10,11 +10,11 @@ tv_shows <- c(
   "Legends of Tomorrow" = "http://www.imdb.com/title/tt4532368",
   "Lucifer" = "http://www.imdb.com/title/tt4052886",
   "Preacher" = "http://www.imdb.com/title/tt5016504",
-  "Supergirl" = "http://www.imdb.com/title/tt4016454".
+  "Supergirl" = "http://www.imdb.com/title/tt4016454",
   "The Flash" = "http://www.imdb.com/title/tt3107288"
 )
 
-seasons_number <- c)
+seasons_number <- c(
   "Agent Carter" = 2,
   "Agents of SHIELD" = 3,
   "Arrow" = 4,
@@ -24,7 +24,23 @@ seasons_number <- c)
   "Legends of Tomorrow" = 1,
   "Lucifer" = 1,
   "Preacher" = 1,
-  "Supergirl" = 1.
+  "Supergirl" = 1,
   "The Flash" = 2
 )
 
+all_shows <- vector("list", length(tv_shows))
+
+for(i in 1:length(tv_shows)) {
+  all_shows[[i]] <- get_episodes_info(get_episodes_links(get_seasons_links(tv_shows[i], seasons_number[i])))
+}
+
+shows <- bind_rows(all_shows)
+
+save(shows, file = "data/shows.rda")
+
+getwd()
+# Check data validity.
+lapply(shows, {function(x) return(sum(is.na(x)))})
+
+shows %>% filter(!is.na(episode)) -> shows
+shows %>% mutate(air_date = as_date(air_date)) -> shows
