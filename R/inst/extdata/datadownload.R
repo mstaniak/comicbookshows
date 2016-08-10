@@ -48,8 +48,8 @@ save(shows, file = "data/shows.rda")
 
 # shows %>% mutate(air_date = as_date(air_date)) -> shows
 
-shows %>%
-  mutate(data2 = as_date(air_date)) %>%
-  filter(is.na(data2)) %>%
-  select(show) %>%
-  distinct()
+# shows %>%
+#   mutate(data2 = as_date(air_date)) %>%
+#   filter(is.na(data2)) %>%
+#   select(show) %>%
+#   distinct()
