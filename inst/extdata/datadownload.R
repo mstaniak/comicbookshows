@@ -42,14 +42,15 @@ shows <- bind_rows(all_shows)
 
 shows %>% filter(!is.na(episode)) -> shows
 shows %>% mutate(show = ifelse(show == "Agenci T.A.R.C.Z.Y.", "Agents of S.H.I.E.L.D.",
-                        ifelse(show == "Agentka Carter", "Agent Carter", show))) -> shows
-
-save(shows, file = "data/shows.rda")
+                               ifelse(show == "Agentka Carter", "Agent Carter", show))) -> shows
 
 # shows %>% mutate(air_date = as_date(air_date)) -> shows
 
-# shows %>%
-#   mutate(data2 = as_date(air_date)) %>%
-#   filter(is.na(data2)) %>%
+# Usunięcie odcinków specjalnych.
+shows %>%
+  mutate(data2 = as_date(air_date)) %>%
+  filter(!is.na(data2)) -> shows # %>%
 #   select(show) %>%
 #   distinct()
+
+save(shows, file = "data/shows.rda")

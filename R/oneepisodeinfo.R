@@ -28,7 +28,7 @@ one_episode_info <- function(ep_link) {
     html_text() %>%
     str_split("\\|") %>%
     unlist() %>%
-    str_extract("[1-9]+") -> seasep
+    str_extract("[0-9]+") -> seasep
   seas <- seasep[1]
   ep <- seasep[2]
 
