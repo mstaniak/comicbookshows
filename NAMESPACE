@@ -3,5 +3,6 @@
 export(get_episodes_info)
 export(get_episodes_links)
 export(get_one_season)
+export(get_one_season_wiki)
 export(get_seasons_links)
 export(one_episode_info)
