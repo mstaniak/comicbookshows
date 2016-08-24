@@ -1,3 +1,26 @@
+#' Links to all episodes of one season of one show.
+#'
+#' @param season String character containing link to a season page.
+#'
+#' @return Vector with links to episodes from a given season.
+#'
+#' @export
+
+get_one_season <- function(season) {
+  read_html(curl(season, handle = curl::new_handle("useragent" = "Mozilla/5.0"))) %>%
+    html_node(".list.detail.eplist") %>%
+    html_nodes("a") %>%
+    html_attr("href") %>%
+    unique() %>%
+    paste0("http://www.imdb.com", .) -> tmp
+  tmp <- data.frame(tmp, stringsAsFactors = F)
+  colnames(tmp) <- "seas_link"
+  tmp %>%
+    filter(grepl(seas_link, pattern = "ref", fixed = T)) %>%
+    unlist(use.names = F)
+}
+
+
 #' Links to all episodes of one show.
 #'
 #' @param seasons Character vector of links to season episodes as returned by get_seasons_links function.

@@ -13,5 +13,6 @@ Imports:
     dplyr,
     rvest,
     lubridate,
-    tibble
+    tibble,
+    curl
 RoxygenNote: 5.0.1

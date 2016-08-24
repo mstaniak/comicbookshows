@@ -8,7 +8,7 @@
 #'
 
 get_seasons_links <- function(show_link, no_of_seasons) {
-  read_html(show_link) %>%
+  read_html(curl(show_link, handle = curl::new_handle("useragent" = "Mozilla/5.0"))) %>%
     html_nodes(".seasons-and-year-nav") %>%
     html_nodes("a") %>%
     html_attr("href") %>%
