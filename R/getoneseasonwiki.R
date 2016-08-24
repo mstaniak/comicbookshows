@@ -6,9 +6,24 @@
 #' @return List returned by rvest html_table function.
 #'
 #' @export
+#'
 
 get_one_season_wiki <- function(link, selector) {
   read_html(link) %>%
     html_nodes(css = selector) %>%
     html_table()
+}
+
+#' Short function for changing column names after downloading the data.
+#'
+#' @param df Data frame returned by get_one_season_wiki function after manipulations from datadownload.R file.
+#'
+#' @return Data frame df with changed colnames.
+#'
+#' @export
+#'
+
+change_colnames <- function(df) {
+  colnames(df) <- c("episode", "rating_share", "viewers")
+  return(df)
 }

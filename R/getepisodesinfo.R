@@ -8,7 +8,7 @@
 #' @export
 
 one_episode_info <- function(ep_link) {
-  read_html(curl(ep_link, handle = curl::new_handle("useragent" = "Mozilla/5.0"))) %>%
+  read_html(ep_link) %>%
     html_node("#title-overview-widget") -> tmp_panel
 
   tmp_panel %>%

@@ -7,7 +7,7 @@
 #' @export
 
 get_one_season <- function(season) {
-  read_html(curl(season, handle = curl::new_handle("useragent" = "Mozilla/5.0"))) %>%
+  read_html(season) %>%
     html_node(".list.detail.eplist") %>%
     html_nodes("a") %>%
     html_attr("href") %>%
