@@ -37,7 +37,7 @@ plot_imdb_over_others <- function(show_name) {
     summarise(rating = mean(imdb_rating)) -> other_shows
 
   shows %>%
-    filter(show == "Agents of S.H.I.E.L.D.") %>%
+    filter(show == show_name) %>%
     ggplot(aes(x = air_date, y = imdb_rating, group = season)) +
     geom_line(data = other_shows, aes(x = date_plot, y = rating),
               inherit.aes = FALSE, color = "grey") +
