@@ -10,15 +10,17 @@ change_wday <- function(actual_date, target_wday) {
   actual_date - wday(actual_date) + target_wday
 }
 
+
 #' Plot IMDb ratings of one show with other show's mean rating in the background.
 #'
 #' @param show_name Name of the show to plot.
+#' @param Logical. If TRUE, ratings for other shows will be displayed.
 #'
 #' @return ggplot2 object.
 #'
 #' @export
 
-plot_imdb_over_others <- function(show_name) {
+plot_imdb_ratings <- function(show_name, background = FALSE) {
   shows %>%
     select(show, air_date) %>%
     filter(show == show_name) %>%
@@ -38,11 +40,15 @@ plot_imdb_over_others <- function(show_name) {
 
   shows %>%
     filter(show == show_name) %>%
-    ggplot(aes(x = air_date, y = imdb_rating, group = season)) +
-    geom_line(data = other_shows, aes(x = date_plot, y = rating),
-              inherit.aes = FALSE, color = "grey") +
-    geom_line(size = 1.5) +
-    theme_bw() +
-    xlab("") +
-    ylab("")
+    ggplot(aes(x = air_date, y = imdb_rating, group = season)) -> plot
+
+  if(background)
+    plot <- plot + geom_line(data = other_shows, aes(x = date_plot, y = rating),
+                             inherit.aes = FALSE, color = "grey")
+
+  plot <- plot + geom_line(size = 1.5) +
+                 theme_bw() +
+                 xlab("") +
+                 ylab("")
+  return(plot)
 }
