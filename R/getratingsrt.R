@@ -5,7 +5,7 @@
 #' @export
 #'
 
-pic_sec <- function(x) {
+pick_sec <- function(x) {
   return(x[2])
 }
 
