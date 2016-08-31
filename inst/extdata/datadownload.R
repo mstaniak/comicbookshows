@@ -1,6 +1,4 @@
-### Download data form IMDb -----------------------------------------
-
-# Required packages.
+### Required packages. ------------------------
 library(curl)
 library(rvest)
 library(dplyr)
@@ -177,3 +175,68 @@ shows %>%
 
 # Remove temporary objects.
 rm(selectors, ratings_tbl, ratings_dfs, rtdfs, seasons_tmp, no_arrow, arrow, ratings, i)
+
+### Download RottenTomatoes data. ----------------------------------
+# Links to shows pages.
+tv_shows_rt <- c(
+  "Agent Carter" = "https://www.rottentomatoes.com/tv/marvel_s_agent_carter",
+  "Agents of SHIELD" = "https://www.rottentomatoes.com/tv/marvel_s_agents_of_s_h_i_e_l_d_",
+  "Arrow" = "https://www.rottentomatoes.com/tv/arrow",
+  "Constantine" = "https://www.rottentomatoes.com/tv/constantine",
+  "Daredevil" = "https://www.rottentomatoes.com/tv/daredevil",
+  "Gotham" = "https://www.rottentomatoes.com/tv/gotham",
+  "iZombie" = "https://www.rottentomatoes.com/tv/izombie",
+  "Jessica Jones" = "https://www.rottentomatoes.com/tv/jessica_jones",
+  "Legends of Tomorrow" = "https://www.rottentomatoes.com/tv/dc_s_legends_of_tomorrow",
+  "Lucifer" = "https://www.rottentomatoes.com/tv/lucifer",
+  "Preacher" = "https://www.rottentomatoes.com/tv/preacher",
+  "Supergirl" = "https://www.rottentomatoes.com/tv/supergirl",
+  "The Flash" = "https://www.rottentomatoes.com/tv/flash"
+)
+
+seasons_number <- c("Agent Carter" = 2, "Agents of SHIELD" = 3, "Arrow" = 4, "Constantine" = 1,
+                    "Daredevil" = 2, "Gotham" = 2, "iZombie" = 2, "Jessica Jones" = 1,
+                    "Legends of Tomorrow" = 1, "Lucifer" = 1, "Preacher" = 1, "Supergirl" = 1, "The Flash" = 2)
+
+tmp <- data.frame(tv_shows_rt, seasons_number, stringsAsFactors = FALSE)
+shows_info <- setNames(split(tmp, seq(nrow(tmp))), rownames(tmp))
+
+# Download links to seasons.
+rt_links <- seasons_links_rt(shows_info)
+
+# Download easons' ratings.
+rt_ratings <- vector("list", 23)
+for(i in 1:23) {
+  rt_ratings[[i]] <- get_ratings_rt(rt_links[i, 1])
+}
+
+# Clean data.
+rt_ratings <- bind_rows(rt_ratings)
+
+rt_ratings %>%
+  mutate(critics = str_replace_all(critics, "%", ""),
+         audience = str_replace_all(audience, "%", ""),
+         critics_average = str_replace_all(critics_average, "/10", ""),
+         audience_average = str_replace_all(audience_average, "/5", "")) -> rt_ratings
+
+rep(names(seasons_number), times = seasons_number) %>%
+  as_tibble() %>%
+  rename(show = value) %>%
+  group_by(show) %>%
+  mutate(season = as.character(row_number(show))) %>%
+  bind_cols(rt_ratings) -> rt_ratings
+rt_ratings %>% 
+  ungroup() -> rt_ratings
+rt_ratings %>% 
+  mutate(show = ifelse(show == "Agents of SHIELD", 
+                       "Agents of S.H.I.E.L.D.", 
+                       show)) -> rt_ratings
+
+inner_join(shows, rt_ratings, by = c("show", "season")) %>%
+  arrange(show, season) -> shows
+
+# Save results.
+# save(shows, file = "data/shows.rda")
+
+# Remove temporary objects.
+rm(tv_shows_rt, seasons_number, tmp, shows_info, links_rt, rt_ratings)
