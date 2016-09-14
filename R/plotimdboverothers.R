@@ -6,7 +6,7 @@
 #' @return Date given date with day chosen to closest given day of the week.
 #'
 
-changeDay <- function(actualDate, targetWday) {
+changeWday <- function(actualDate, targetWday) {
   actualDate - wday(actualDate) + targetWday
 }
 
@@ -21,16 +21,16 @@ changeDay <- function(actualDate, targetWday) {
 #' @export
 
 plotImdbRatings <- function(showName, background = FALSE) {
-  shows %>%
-    select(show, airDate) %>%
-    filter(show == showName) %>%
+  episodes %>%
+    select(showTitle, airDate) %>%
+    filter(showTitle == showName) %>%
     summarise(first_ep = min(airDate),
               last_ep = max(airDate)) %>%
     unlist() %>%
     as_date() -> dates
 
-  shows %>%
-    filter(show != showName &
+  episodes %>%
+    filter(showTitle != showName &
              airDate >= dates["first_ep"] &
              airDate <= dates["last_ep"] &
              channel != "Netflix") %>%
@@ -38,8 +38,8 @@ plotImdbRatings <- function(showName, background = FALSE) {
     group_by(datePlot) %>%
     summarise(rating = mean(imdbRating)) -> otherShows
 
-  shows %>%
-    filter(show == showName) %>%
+ episodes %>%
+    filter(showTitle == showName) %>%
     ggplot(aes(x = airDate, y = imdbRating, group = season)) -> plot
 
   if(background)
