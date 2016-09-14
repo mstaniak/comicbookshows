@@ -6,7 +6,7 @@
 #'
 #' @export
 
-get_one_season <- function(season) {
+getOneSeason <- function(season) {
   read_html(season) %>%
     html_node(".list.detail.eplist") %>%
     html_nodes("a") %>%
@@ -23,12 +23,12 @@ get_one_season <- function(season) {
 
 #' Links to all episodes of one show.
 #'
-#' @param seasons Character vector of links to season episodes as returned by get_seasons_links function.
+#' @param seasons Character vector of links to season episodes as returned by getSeasonLinks function.
 #'
 #' @return List. Each element of the list is a vector with links to episodes of one season.
 #'
 #' @export
 
 get_episodes_links <- function(seasons) {
-  unlist(lapply(seasons, get_one_season))
+  unlist(lapply(seasons, getOneSeason))
 }

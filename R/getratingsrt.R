@@ -1,11 +1,11 @@
-#' Helper function for get_ratings_rt
+#' Helper function for getRatingsRT
 #'
 #' @param x Vector.
 #'
 #' @export
 #'
 
-pick_sec <- function(x) {
+pickSec <- function(x) {
   return(x[2])
 }
 
@@ -17,7 +17,7 @@ pick_sec <- function(x) {
 #' @export
 #'
 
-get_ratings_rt <- function(link) {
+getRatingsRT <- function(link) {
   read_html(link) %>%
     html_node(css = "span.meter-value") %>%
     html_text() -> cri
@@ -31,17 +31,17 @@ get_ratings_rt <- function(link) {
     html_text() %>%
     str_split(":[:space:]+") %>%
     unlist(use.names = FALSE) %>%
-    pick_sec() -> avg_rt_crit
+    pickSec() -> avgRTcrit
 
   read_html(link) %>%
     html_node(css = ".audience-info > div:nth-child(1)") %>%
     html_text() %>%
     str_split(":[:space:]+") %>%
     unlist(use.names = FALSE) %>%
-    pic_sec() -> avg_rt_aud
+    picSec() -> avgRTaud
 
   return(list(critics = cri,
               audience = aud,
-              critics_average = avg_rt_crit,
-              audience_average = avg_rt_aud))
+              criticsAverage = avgRTcrit,
+              audienceAverage = avgRTaud))
 }

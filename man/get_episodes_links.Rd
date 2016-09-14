@@ -7,7 +7,7 @@
 get_episodes_links(seasons)
 }
 \arguments{
-\item{seasons}{Character vector of links to season episodes as returned by get_seasons_links function.}
+\item{seasons}{Character vector of links to season episodes as returned by getSeasonLinks function.}
 }
 \value{
 List. Each element of the list is a vector with links to episodes of one season.

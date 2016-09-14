@@ -1,70 +1,70 @@
 #' Information about one episode.
 #'
-#' @param ep_link Character string: link to episode's IMDb page.
+#' @param epLink Character string: link to episode's IMDb page.
 #'
 #' @return vector containing show name, value indicating if the show was cancelled,
 #'                season and episode number, air date, episode title, rating and number of votes.
 #'
 #' @export
 
-one_episode_info <- function(ep_link) {
-  read_html(ep_link) %>%
-    html_node("#title-overview-widget") -> tmp_panel
+oneEpisodeInfo <- function(epLink) {
+  read_html(epLink) %>%
+    html_node("#title-overview-widget") -> tmpPanel
 
-  tmp_panel %>%
+  tmPanel %>%
     html_node(".titleParent") %>%
     html_node("a") %>%
-    html_text() -> show_name
+    html_text() -> showName
 
-  tmp_panel %>%
+  tmpPanel %>%
     html_node(".parentDate") %>%
     html_text() %>%
     substr(2, nchar(.) - 1) %>%
     substr(6, nchar(.)) -> canc
-  cancelled <- !canc == " "
+  cancelled <- !(canc == " ")
 
-  tmp_panel %>%
+  tmpPanel %>%
     html_node(".bp_heading") %>%
     html_text() %>%
     str_split("\\|") %>%
     unlist() %>%
-    str_extract("[0-9]+") -> seasep
-  seas <- seasep[1]
-  ep <- seasep[2]
+    str_extract("[0-9]+") -> seasEp
+  seas <- seasEp[1]
+  ep <- seasEp[2]
 
-  tmp_panel %>%
+  tmpPanel %>%
     html_nodes("meta") %>%
     html_attr("content") %>%
-    last() -> emis_date
+    last() -> emisDate
 
-  tmp_panel %>%
+  tmpPanel %>%
     html_node("h1") %>%
-    html_text() -> ep_title
+    html_text() -> epTitle
 
-  tmp_panel %>%
+  tmpPanel %>%
     html_node(".ratingValue") %>%
     html_node("span") %>%
-    html_text() -> ep_rating
+    html_text() -> epRating
 
-  tmp_panel %>%
+  tmpPanel %>%
     html_node(".imdbRating") %>%
     html_node("a") %>%
-    html_text() -> votes_no
+    html_text() -> votesNo
 
-  return(c(show_name,
+  return(c(showName,
            cancelled,
            seas,
            ep,
-           emis_date,
-           ep_title,
-           ep_rating,
-           votes_no))
+           emisDate,
+           epTitle,
+           epRating,
+           votesNo))
 }
 
 
 #' Information about given episodes extracted from IMDb pages.
 #'
-#' @param eps_link Links to episodes returned from get_episodes_links function.
+#' @param epLinks Links to episodes returned from get_episodes_links function.
 #'
 #' @return Data frame with columns show (character, name of the show), cancelled (logical, TRUE if show has been cancelled),
 #'         season (character, season number), episode (episode numebr within season),
@@ -72,13 +72,13 @@ one_episode_info <- function(ep_link) {
 #'
 #' @export
 
-get_episodes_info <- function(eps_links) {
-  tmp_result <- data.frame(t(apply(data.frame(eps_links), 1, one_episode_info)), stringsAsFactors = F)
-  colnames(tmp_result) <- c("show", "cancelled", "season", "episode", "air_date",
-                            "title", "rating", "num_of_votes")
+getEpisodesInfo <- function(epLinks) {
+  tmpResult <- data.frame(t(apply(data.frame(epLinks), 1, oneEpisodeInfo)), stringsAsFactors = F)
+  colnames(tmp_result) <- c("showTitle", "cancelled", "season", "episode", "airDate",
+                            "title", "imdbRating", "numOfVotes")
   tmp_result %>%
     mutate(cancelled = as.logical(cancelled),
-           rating = as.numeric(rating),
-           num_of_votes = as.integer(str_replace(num_of_votes, pattern = ",", replacement = ""))) %>%
+           rating = as.numeric(imdbRating),
+           num_of_votes = as.integer(str_replace(numOfVotes, pattern = ",", replacement = ""))) %>%
     as_tibble()
 }
