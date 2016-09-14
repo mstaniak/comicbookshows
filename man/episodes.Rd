@@ -6,15 +6,15 @@
 \title{Data on episodes.}
 \format{A tibble with 409 rows and 9 columns:
 \describe{
-  \item{show, chr: full show name (excluding "Marvel's" or "DC's")}
-  \item{season, chr: season number}
-  \item{episode, chr: episode number}
-  \item{air_date, date: day when episode first aired on TV. Release date for Netflix shows}
-  \item{title, chr: full episode title}
-  \item{imdb_rating: dbl: IMDb rating on scale 1-10}
-  \item{num_of_votes, int: number of people who voted on this episode on IMDb}
-  \item{nielsen_rating: dbl: Nielsen rating}
-  \item{viewers: dbl, number of live viewers in milions}
+  \item{showTitle}{chr, full show name (excluding "Marvel's" or "DC's")}
+  \item{season}{chr, season number}
+  \item{episode}{chr, episode number}
+  \item{airDate}{date, day when episode first aired on TV. Release date for Netflix shows}
+  \item{title}{chr full, episode title}
+  \item{imdbRating}{dbl, IMDb rating on scale 1-10}
+  \item{numOfVotes}{int, number of people who voted on this episode on IMDb}
+  \item{nielsenRating}{dbl, Nielsen rating}
+  \item{viewers}{dbl, number of live viewers in milions}
  }
 
  @source \url{https://imdb.com}, \url{https://wikipedia.org},
