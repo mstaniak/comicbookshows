@@ -11,17 +11,18 @@ changeWday <- function(actualDate, targetWday) {
 }
 
 
-#' Plot IMDb ratings of one show with other show's mean rating in the background.
+#' Plot IMDb ratings of one show.
 #'
 #' @param showName Name of the show to plot.
 #' @param background  logical, if TRUE, ratings for other shows will be displayed.
 #'
+#' @param trend logical, if TRUE, trend line for season is plotted.
 #' @return ggplot2 object.
 #'
 #' @export
 
-plotImdbRatings <- function(showName, background = FALSE) {
-  episodes %>%
+plotImdbRatings <- function(showName, background = FALSE, trend = FALSE) {
+  episodesPlus %>%
     select(showTitle, airDate) %>%
     filter(showTitle == showName) %>%
     summarise(first_ep = min(airDate),
@@ -29,7 +30,7 @@ plotImdbRatings <- function(showName, background = FALSE) {
     unlist() %>%
     as_date() -> dates
 
-  episodes %>%
+  episodesPlus %>%
     filter(showTitle != showName &
              airDate >= dates["first_ep"] &
              airDate <= dates["last_ep"] &
@@ -38,7 +39,7 @@ plotImdbRatings <- function(showName, background = FALSE) {
     group_by(datePlot) %>%
     summarise(rating = mean(imdbRating)) -> otherShows
 
- episodes %>%
+ episodesPlus %>%
     filter(showTitle == showName) %>%
     ggplot(aes(x = airDate, y = imdbRating, group = season)) -> plot
 
@@ -50,5 +51,8 @@ plotImdbRatings <- function(showName, background = FALSE) {
                  theme_bw() +
                  xlab("") +
                  ylab("")
+  if(trend)
+    plot <- plot + geom_smooth(aes(group = season), method = "lm", se = FALSE,
+			     linetype = 2, size = 0.8)
   return(plot)
 }
