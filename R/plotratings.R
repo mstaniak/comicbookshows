@@ -71,19 +71,16 @@ filterToPlot <- function(showNames, typeRating, seasons = 1:defaultSeasons,
 
 #' Plot IMDb ratings of one show.
 #'
+#' @param sources list returned by filterToPlot function.
 #' @param background  logical, if TRUE, ratings for other shows will be displayed.
-#'
 #' @param trend logical, if TRUE, trend line for season is plotted.
-#' @param ... arguments passed to filterToPlot function.
 #'
 #' @return ggplot2 object.
 #'
 #' @export
 #'
 
-plotRatings <- function(background = TRUE, trend = FALSE, ...) {
-
-  sources <- filterToPlot(...)
+plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 
   plot <-  ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) 
 
@@ -99,6 +96,7 @@ plotRatings <- function(background = TRUE, trend = FALSE, ...) {
   if(trend)
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
 			       se = FALSE, linetype = 2, size = 0.8)
+ 
   plot <- plot + guides(color = "none")
 
   return(plot)
