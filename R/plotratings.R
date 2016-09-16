@@ -27,7 +27,7 @@ changeWday <- function(actualDate, targetWday) {
 #' @export
 #'
 
-filterToPlot <- function(showNames, typeRating, seasons = defaultSeasons,
+filterToPlot <- function(showNames, typeRating, seasons = 1:defaultSeasons,
                          minRating = 0, maxRating = 10,
 		         minDate = defaultMinDate, maxDate = defaultMaxDate) {
   
@@ -57,7 +57,7 @@ filterToPlot <- function(showNames, typeRating, seasons = defaultSeasons,
     filter(showTitle %in% showNames,
 	   airDate >= minDate,
            airDate <= maxDate,
-	   season %in% 1:seasons) %>%
+	   season %in% seasons) %>%
     filter_(interp("c >= minR",
                    c = as.name(typeRating), minR = minRating),
             interp("c <= maxR",
