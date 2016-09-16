@@ -79,6 +79,7 @@ filterToPlot <- function(showNames, typeRating, seasons = defaultSeasons,
 #' @return ggplot2 object.
 #'
 #' @export
+#'
 
 plotRatings <- function(background = TRUE, trend = FALSE, ...) {
 
@@ -90,13 +91,16 @@ plotRatings <- function(background = TRUE, trend = FALSE, ...) {
     plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating),
                              inherit.aes = FALSE, color = "grey")
 
-  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), size = 1.5) +
+  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 1) +
+	         geom_point(size = 2) +
                  theme_bw() +
                  xlab("") +
                  ylab("")
   if(trend)
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
 			       se = FALSE, linetype = 2, size = 0.8)
+  plot <- plot + guides(color = "none")
+
   return(plot)
 }
 
