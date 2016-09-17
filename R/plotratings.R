@@ -15,7 +15,7 @@ changeWday <- function(actualDate, targetWday) {
 #'
 #' @param showNames chr vector with one or two full names of shows.
 #' @param typeRating chr, one of vales "imdbRating", "nielsenRating". 
-#' @param seasons int vector with numbers of season to display.
+#' @param seasons list with vectors of seasons to display.
 #' @param minRating dbl, only episodes with higher rating will be displayed.
 #' @param maxRating dbl, only episodes with lower rating will be displayed.
 #' @param minDate date, minimum air date to display.
@@ -27,7 +27,7 @@ changeWday <- function(actualDate, targetWday) {
 #' @export
 #'
 
-filterToPlot <- function(showNames, typeRating, seasons = 1:defaultSeasons,
+filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons, 1:defaultSeasons)
                          minRating = 0, maxRating = 10,
 		         minDate = defaultMinDate, maxDate = defaultMaxDate) {
   
@@ -54,10 +54,10 @@ filterToPlot <- function(showNames, typeRating, seasons = 1:defaultSeasons,
     summarise(rating = mean(rating)) -> otherShows
 
   episodesPlus %>%
-    filter(showTitle %in% showNames,
+    filter(((showTitle == showNames[1] && season %in% seasons[[1]]) || 
+	   (showTitle == showNames[2] && season %in% seasons[[2]])),
 	   airDate >= minDate,
-           airDate <= maxDate,
-	   season %in% seasons) %>%
+           airDate <= maxDate) %>%
     filter_(interp("c >= minR",
                    c = as.name(typeRating), minR = minRating),
             interp("c <= maxR",
