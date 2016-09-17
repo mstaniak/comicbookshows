@@ -17,7 +17,7 @@ giveTooltip <- function(filtData, click, typeRating) {
     tooltipText <- "Click a point to display details about the episode."
   } else {
     point <- nearPoints(filtData, click,  xvar = "airDate", yvar = "rating")
-    if(is.na(point)) {
+    if(dim(point)[1] == 0) {
       tooltipText <- "Click a point to display details about the episode."
     } else {
       tooltipText <- paste(paste("Episode details:", point[["showTitle"]], 
