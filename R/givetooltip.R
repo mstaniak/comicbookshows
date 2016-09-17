@@ -17,7 +17,7 @@ giveTooltip <- function(filtData, click, typeRating) {
   } else {
     point <- nearPoints(filtData, click,  xvar = "airDate", yvar = "rating")
     tooltipText <- paste(paste("Episode details:", point[["showTitle"]], 
-			       paste(point[["episode"]], point[["season"]], sep = "x")),
+			       paste(point[["season"]], point[["episode"]], sep = "x")),
 			 paste("Title:", point[["epTitle"]]),
 			 paste("Aired:", point[["airDate"]]),
 			 paste("Rating:", round(as.numeric(point[["rating"]]), 2)),
