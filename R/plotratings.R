@@ -33,7 +33,8 @@ filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons,
   
   episodesPlus %>%
     select(showTitle, airDate) %>%
-    filter(showTitle %in% showNames) %>%
+    filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
+	    (showTitle == showNames[2] & season %in% seasons[[2]]))) %>%
     summarise(first_ep = min(airDate),
               last_ep = max(airDate)) %>%
     unlist() %>%
@@ -98,8 +99,8 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
 			       se = FALSE, linetype = 2, size = 0.8)
  
-  plot <- plot + guides(color = "none")
-
+  plot <- plot + theme(legend.title = "Show")
+  
   return(plot)
 }
 
