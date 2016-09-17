@@ -11,7 +11,7 @@
 #' @export
 #'
 
-tooltip <- function(filtData, click, typeRating) {
+giveTooltip <- function(filtData, click, typeRating) {
   if(is.null(click)) {
     return("Click a point to display details about the episode. ")
   } else {

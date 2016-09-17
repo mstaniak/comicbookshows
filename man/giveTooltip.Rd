@@ -2,17 +2,23 @@
 % Please edit documentation in R/givetooltip.R
 \name{giveTooltip}
 \alias{giveTooltip}
-\title{Function that returns a tooltip for plotOneShow plot.}
+\title{Text info about given episode.}
 \usage{
-giveTooltip(key)
+giveTooltip(filtData, click, typeRating)
 }
 \arguments{
-\item{key}{Identifier from plotOneShow function.}
+\item{filtData}{Data frame returned by filterToPlot function.}
+
+\item{click}{shiny object returned on plot click.}
+
+\item{typeRating}{chr, "imdbRating" or "nielsenRating".}
 }
 \value{
-HTML generating tooltip.
+html with show name, episode's signature, episode's title,
+        rating and number of votes/numbers of viewers, air date in 
+        separate lines.
 }
 \description{
-Function that returns a tooltip for plotOneShow plot.
+Text info about given episode.
 }
 
