@@ -17,7 +17,8 @@ filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
 	   (showTitle == showNames[2] & season == seasons[2])),
 	   imdbRating >= minRating,
 	   imdbRating <= maxRating) %>%
-    mutate(ep = paste(season,  episode, sep = "x"))
+    mutate(ep = paste(season,  episode, sep = "x")) %>%
+    rename(rating = imdbRating)
 }
 
 
@@ -31,7 +32,7 @@ filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
 #'
 
 plotNetflix <- function(sourceT) {
-  ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = imdbRating)) +
+  ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = rating)) +
     geom_point(size = 4) +
     geom_line(aes(group = showTitle), linetype = 2) +
     theme_bw() +
