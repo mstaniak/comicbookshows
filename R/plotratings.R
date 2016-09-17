@@ -27,7 +27,7 @@ changeWday <- function(actualDate, targetWday) {
 #' @export
 #'
 
-filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons, 1:defaultSeasons)
+filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons, 1:defaultSeasons),
                          minRating = 0, maxRating = 10,
 		         minDate = defaultMinDate, maxDate = defaultMaxDate) {
   
