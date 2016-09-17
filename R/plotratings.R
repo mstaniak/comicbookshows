@@ -89,16 +89,16 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 
   if(background)
     plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating),
-                             inherit.aes = FALSE, color = "grey")
+                             inherit.aes = FALSE, color = "grey", size = 2)
 
-  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 1) +
-	         geom_point(size = 2) +
+  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2) +
+	         geom_point(size = 3) +
                  theme_bw() +
                  xlab("") +
                  ylab("")
   if(trend)
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
-			       se = FALSE, linetype = 2, size = 0.8)
+			       se = FALSE, size = 1.5)
 
   if(n_distinct(sources[[2]]$showTitle) > 1) {
     plot <- plot + scale_color_discrete(name = "Show")
