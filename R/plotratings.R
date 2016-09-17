@@ -63,9 +63,10 @@ filterToPlot <- function(showNames, typeRating, seasons = 1:defaultSeasons,
             interp("c <= maxR",
                    c = as.name(typeRating), maxR = maxRating)) %>%
     rename_(.dots = setNames(typeRating, "rating")) %>%
-    select(showTitle, airDate, season, episode, title, rating, numOfVotes) -> chosenShows 
+    select(showTitle, airDate, season, episode, epTitle, rating, numOfVotes, viewers) -> chosenShows 
  
   return(list(otherShows, chosenShows))
+
 } 
 
 
