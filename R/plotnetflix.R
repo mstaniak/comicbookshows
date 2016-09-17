@@ -24,19 +24,22 @@ filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
 #' Plot Netflix show's rating or compare it with other show.
 #'
 #' @param sourceT Data frame returned by filterNetflix function.
+#' @param trend lgl, if TRUE, trend line will be ploted.
 #'
 #' @return ggplot2 object.
 #'
 #' @export
 #'
 
-plotNetflix <- function(sourceT) {
+plotNetflix <- function(sourceT, trend = FALSE) {
   ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = rating)) +
     geom_point(size = 4) +
     geom_line(aes(group = showTitle), linetype = 2) +
     theme_bw() +
     xlab("") +
     ylab("") +
-    facet_grid(~showTitle, scales = "free")
+    facet_grid(~showTitle, scales = "free") + 
+    geom_smooth(aes(group = paste(showTitle, season)), method = "lm",
+		size = 1.5, se = FALSE)
 }
 
