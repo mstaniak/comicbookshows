@@ -31,12 +31,12 @@ filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
 #'
 
 plotNetflix <- function(sourceT) {
-  ggplot(sourceT, aes(x = ep, y = imdbRating)) +
-    geom_point(size = 3) +
+  ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = imdbRating)) +
+    geom_point(size = 4) +
     geom_line(aes(group = showTitle), linetype = 2) +
     theme_bw() +
     xlab("") +
     ylab("") +
-    facet_grid(~showTitle)
+    facet_grid(~showTitle, scales = "free")
 }
 

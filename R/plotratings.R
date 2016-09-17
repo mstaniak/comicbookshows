@@ -91,8 +91,8 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
     plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating),
                              inherit.aes = FALSE, color = "grey", size = 2)
 
-  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2) +
-	         geom_point(size = 3) +
+  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2, size = 1.5) +
+	         geom_point(size = 4) +
                  theme_bw() +
                  xlab("") +
                  ylab("")
