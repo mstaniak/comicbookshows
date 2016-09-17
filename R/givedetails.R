@@ -3,6 +3,7 @@
 #' @param filtData Data frame returned by filterToPlot function.
 #' @param click shiny object returned on plot click.
 #' @param typeRating chr, "imdbRating" or "nielsenRating".
+#' @param netflix lgl, if TRUE, xvar will be "ep"
 #'
 #' @return html with show name, episode's signature, episode's title,
 #'         rating and number of votes/numbers of viewers, air date in 
@@ -11,12 +12,16 @@
 #' @export
 #'
 
-giveTooltip <- function(filtData, click, typeRating) {
+giveDetails <- function(filtData, click, typeRating, netflix = FALSE) {
   tooltipText <- ""
+  x <- "airDate"
+  if(netflix) {
+    x <- "ep"
+  }
   if(is.null(click)) {
     tooltipText <- "Click a point to display details about the episode."
   } else {
-    point <- nearPoints(filtData, click,  xvar = "airDate", yvar = "rating")
+    point <- nearPoints(filtData, click,  xvar = x, yvar = "rating")
     if(dim(point)[1] == 0) {
       tooltipText <- "Click a point to display details about the episode."
     } else {
