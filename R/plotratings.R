@@ -54,8 +54,8 @@ filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons,
     summarise(rating = mean(rating)) -> otherShows
 
   episodesPlus %>%
-    filter(((showTitle == showNames[1] && season %in% seasons[[1]]) || 
-	   (showTitle == showNames[2] && season %in% seasons[[2]])),
+    filter(((showTitle == showNames[1] & season %in% seasons[[1]]) | 
+	   (showTitle == showNames[2] & season %in% seasons[[2]])),
 	   airDate >= minDate,
            airDate <= maxDate) %>%
     filter_(interp("c >= minR",
