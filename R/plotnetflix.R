@@ -11,8 +11,8 @@
 #'
 
 filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
-  episodes %>%
-    select(showTitle, season, episode, imdbRating, numOfVotes) %>%
+  episodesPlus %>%
+    select(showTitle, epTitle, season, episode, imdbRating, numOfVotes) %>%
     filter(((showTitle == showNames[1] & season == seasons[1]) |
 	   (showTitle == showNames[2] & season == seasons[2])),
 	   imdbRating >= minRating,

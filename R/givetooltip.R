@@ -23,7 +23,7 @@ giveTooltip <- function(filtData, click, typeRating) {
       tooltipText <- paste(paste("Episode details:", point[["showTitle"]], 
 				 paste(point[["season"]], point[["episode"]], sep = "x")),
 			   paste("Title:", point[["epTitle"]]),
-			   paste("Aired:", point[["airDate"]]),
+# 			   paste("Aired:", point[["airDate"]]),
 			   paste("Rating:", round(as.numeric(point[["rating"]]), 2)),
 			   sep = "<br />")
       if(typeRating == "imdbRating") {
