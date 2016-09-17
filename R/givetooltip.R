@@ -12,25 +12,30 @@
 #'
 
 giveTooltip <- function(filtData, click, typeRating) {
+  tooltipText <- ""
   if(is.null(click)) {
-    return("Click a point to display details about the episode. ")
+    tooltipText <- "Click a point to display details about the episode."
   } else {
     point <- nearPoints(filtData, click,  xvar = "airDate", yvar = "rating")
-    tooltipText <- paste(paste("Episode details:", point[["showTitle"]], 
-			       paste(point[["season"]], point[["episode"]], sep = "x")),
-			 paste("Title:", point[["epTitle"]]),
-			 paste("Aired:", point[["airDate"]]),
-			 paste("Rating:", round(as.numeric(point[["rating"]]), 2)),
-			 sep = "<br />")
-    if(typeRating == "imdbRating") {
-      tooltipText <- paste(tooltipText,
-			   paste("Number of votes:", point[["numOfVotes"]]),
-			   sep = "<br />")
-
+    if(is.na(point)) {
+      tooltipText <- "Click a point to display details about the episode."
     } else {
-      tooltipText <- paste(tooltipText,
-			   paste("Viewers in milions:", point[["viewers"]]),
+      tooltipText <- paste(paste("Episode details:", point[["showTitle"]], 
+				 paste(point[["season"]], point[["episode"]], sep = "x")),
+			   paste("Title:", point[["epTitle"]]),
+			   paste("Aired:", point[["airDate"]]),
+			   paste("Rating:", round(as.numeric(point[["rating"]]), 2)),
 			   sep = "<br />")
+      if(typeRating == "imdbRating") {
+	tooltipText <- paste(tooltipText,
+			     paste("Number of votes:", point[["numOfVotes"]]),
+			     sep = "<br />")
+
+      } else {
+	tooltipText <- paste(tooltipText,
+			     paste("Viewers in milions:", point[["viewers"]]),
+			     sep = "<br />")
+      }
     }
   }
   return(HTML(tooltipText))
