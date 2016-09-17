@@ -4,16 +4,16 @@
 \alias{filterToPlot}
 \title{Filter data for plotting function.}
 \usage{
-filterToPlot(showNames, typeRating, seasons = 1:defaultSeasons,
-  minRating = 0, maxRating = 10, minDate = defaultMinDate,
-  maxDate = defaultMaxDate)
+filterToPlot(showNames, typeRating, seasons = list(1:defaultSeasons,
+  1:defaultSeasons), minRating = 0, maxRating = 10,
+  minDate = defaultMinDate, maxDate = defaultMaxDate)
 }
 \arguments{
 \item{showNames}{chr vector with one or two full names of shows.}
 
 \item{typeRating}{chr, one of vales "imdbRating", "nielsenRating".}
 
-\item{seasons}{int vector with numbers of season to display.}
+\item{seasons}{list with vectors of seasons to display.}
 
 \item{minRating}{dbl, only episodes with higher rating will be displayed.}
 
