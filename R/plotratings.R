@@ -100,9 +100,11 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
 			       se = FALSE, linetype = 2, size = 0.8)
 
-  if(n_distinct(sources[[2]]$showTitle) > 1)
+  if(n_distinct(sources[[2]]$showTitle) > 1) {
     plot <- plot + scale_color_discrete(name = "Show")
- 
+   } else {
+       plot <- plot +  guides(color = "none")
+     }
   return(plot)
 }
 
