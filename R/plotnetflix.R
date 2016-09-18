@@ -1,7 +1,8 @@
 #' Filter data to plot Netflix show's ratings or compare it to other show.
 #'
 #' @param showNames chr, full titles of shows to plot.
-#' @param seasons chr, one season for each show in showNames.
+#' @param seasons list of two vectors with seasons, 
+#'                only first element is used.
 #' @param minRating dbl, minimum rating to plot.
 #' @param maxRating db, maximum rating to plot.
 #'
@@ -12,8 +13,8 @@
 
 filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
   episodesPlus %>%
-    filter(((showTitle == showNames[1] & season == seasons[1]) |
-	   (showTitle == showNames[2] & season == seasons[2])),
+    filter(((showTitle == showNames[1] & season == seasons[[1]][1]) |
+	   (showTitle == showNames[2] & season == seasons[[2]][1])),
 	   typeRating == "imdbRating",
 	   rating >= minRating,
 	   rating <= maxRating) %>%
@@ -44,5 +45,6 @@ plotNetflix <- function(sourceT, trend = FALSE) {
     plot <- plot + geom_smooth(aes(group = paste(showTitle, season)), method = "lm",
 			       size = 1.5, se = FALSE)
   }
+  return(plot)
 }
 
