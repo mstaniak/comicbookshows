@@ -4,14 +4,14 @@
 \alias{filterToPlot}
 \title{Filter data for plotting function.}
 \usage{
-filterToPlot(showNames, typeRating, seasons = list(1:defaultSeasons,
+filterToPlot(showNames, chosenRating, seasons = list(1:defaultSeasons,
   1:defaultSeasons), minRating = 0, maxRating = 10,
   minDate = defaultMinDate, maxDate = defaultMaxDate)
 }
 \arguments{
 \item{showNames}{chr vector with one or two full names of shows.}
 
-\item{typeRating}{chr, one of vales "imdbRating", "nielsenRating".}
+\item{chosenRating}{chr, one of vales "imdbRating", "nielsenRating", "vs".}
 
 \item{seasons}{list with vectors of seasons to display.}
 

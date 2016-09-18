@@ -5,7 +5,8 @@
 #'
 #' @return Date given date with day chosen to closest given day of the week.
 #'
-
+#' @export
+#'
 changeWday <- function(actualDate, targetWday) {
   actualDate - wday(actualDate) + targetWday
 }
@@ -14,7 +15,7 @@ changeWday <- function(actualDate, targetWday) {
 #' Filter data for plotting function.
 #'
 #' @param showNames chr vector with one or two full names of shows.
-#' @param typeRating chr, one of vales "imdbRating", "nielsenRating". 
+#' @param chosenRating chr, one of vales "imdbRating", "nielsenRating", "vs". 
 #' @param seasons list with vectors of seasons to display.
 #' @param minRating dbl, only episodes with higher rating will be displayed.
 #' @param maxRating dbl, only episodes with lower rating will be displayed.
@@ -27,7 +28,7 @@ changeWday <- function(actualDate, targetWday) {
 #' @export
 #'
 
-filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons, 1:defaultSeasons),
+filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeasons, 1:defaultSeasons),
                          minRating = 0, maxRating = 10,
 		         minDate = defaultMinDate, maxDate = defaultMaxDate) {
   
@@ -36,36 +37,40 @@ filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons,
     filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
 	    (showTitle == showNames[2] & season %in% seasons[[2]]))) %>%
     select(-season) %>%
-    summarise(first_ep = min(airDate),
-              last_ep = max(airDate)) %>%
+    summarise(firstEp = min(airDate),
+              lastEp = max(airDate)) %>%
     unlist() %>%
     as_date() -> dates
   
   episodesPlus %>%
     filter(!(showTitle %in% showNames),
-             airDate >= max(dates["first_ep"], minDate),
-             airDate <= min(dates["last_ep"], maxDate),
-             channel != "Netflix") %>%
-    filter_(interp("c >= minR",
-                   c = as.name(typeRating), minR = minRating),
-            interp("c <= maxR",
-                   c = as.name(typeRating), maxR = maxRating)) %>%
-    rename_(.dots = setNames(typeRating, "rating")) %>%
-    mutate(datePlot = changeWday(airDate, wday(dates["first_ep"]))) %>%
+	   airDate >= max(dates["firstEp"], minDate),
+	   airDate <= min(dates["lastEp"], maxDate),
+	   channel != "Netflix") -> otherShows
+  if(chosenRating != "vs")
+    otherShows %>% {
+      filter(typeRating == chosenRating,
+	     rating >= minRating,
+	     rating <= maxRating) -> otherShows
+  }
+  otherShows %>%
+    mutate(datePlot = changeWday(airDate, wday(dates["firstEp"]))) %>%
     group_by(datePlot) %>%
-    summarise(rating = mean(rating)) -> otherShows
-
+    summarise(rating = mean(rating),
+	      noOfShows = n_distinct(showTitle)) -> otherShows
+ 
   episodesPlus %>%
-    filter(((showTitle == showNames[1] & season %in% seasons[[1]]) | 
+    filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
 	   (showTitle == showNames[2] & season %in% seasons[[2]])),
 	   airDate >= minDate,
-           airDate <= maxDate) %>%
-    filter_(interp("c >= minR",
-                   c = as.name(typeRating), minR = minRating),
-            interp("c <= maxR",
-                   c = as.name(typeRating), maxR = maxRating)) %>%
-    rename_(.dots = setNames(typeRating, "rating")) %>%
-    select(showTitle, airDate, season, episode, epTitle, rating, numOfVotes, viewers) -> chosenShows 
+	   airDate <= maxDate) -> chosenShows
+  if(chosenRating != "vs") {
+    chosenShows %>%
+      filter(typeRating == "chosenRating",
+	     rating >= minRating,
+	     rating <= maxRating) 
+      select(-typeRating) -> chosenShows
+  }
  
   return(list(otherShows, chosenShows))
 
@@ -84,7 +89,10 @@ filterToPlot <- function(showNames, typeRating, seasons = list(1:defaultSeasons,
 #'
 
 plotRatings <- function(sources, background = TRUE, trend = FALSE) {
-
+  nShow <- n_distinct(sources[[2]]$showTitle)
+  vs <- any(colnames(sources[[2]]) == "typeRating")
+  showNames <- unique(sources[[2]]$showTitle)
+  names(showNames) <- showNames
   plot <-  ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) 
 
   if(background)
@@ -100,11 +108,50 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
 			       se = FALSE, size = 1.5)
 
-  if(n_distinct(sources[[2]]$showTitle) > 1) {
+  if(nShow > 1) {
     plot <- plot + scale_color_discrete(name = "Show")
    } else {
        plot <- plot +  guides(color = "none")
      }
+  if(vs & nShow == 1) {
+    plot <- plot + facet_wrap(~typeRating, scales = "free", ncol = 1,
+			      labeller = as_labeller(c("imdbRating" = "IMDb ratings",
+						       "nielsenRating" = "Nielsen ratings")))
+  }
+
+  return(plot)
+}
+
+
+#' Plot IMDb ratings vs Nielsen ratings for two shows.
+#' 
+#' @param sources Data frame returned by filterToPlot function.
+#' @param trend lgl, if TRUE, trend line will be displayed. 
+#'
+#' @return ggplot2 object.
+#'
+#' @export
+#'
+
+plotRatingsCompareVS <- function(sources, trend = FALSE) {
+  showNames <- unique(sources[[2]]$showTitle)
+  names(showNames) <- showNames
+  plot <- ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) +
+            geom_point(size = 4) +
+	    geom_line(aes(group = paste0(showTitle, season, typeRating)),
+		      linetype = 2, size = 1.5) +
+	    theme_bw() +
+	    scale_color_discrete(name = "Show") +
+	    xlab("") +
+	    ylab("") +
+	    facet_wrap(~typeRating, scales = "free", ncol = 1,
+		       labeller = as_labeller(c("imdbRating" = "IMDb ratings",
+						"nielsenRating" = "Nielsen ratings")))
+  
+  if(trend) {
+    plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)),
+			       method = "lm", se = FALSE, size = 1.5)
+  }
   return(plot)
 }
 
