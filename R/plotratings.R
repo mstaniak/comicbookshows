@@ -47,8 +47,8 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
 	   airDate >= max(dates["firstEp"], minDate),
 	   airDate <= min(dates["lastEp"], maxDate),
 	   channel != "Netflix") -> otherShows
-  if(chosenRating != "vs")
-    otherShows %>% {
+  if(chosenRating != "vs") {
+    otherShows %>% 
       filter(typeRating == chosenRating,
 	     rating >= minRating,
 	     rating <= maxRating) -> otherShows
@@ -93,6 +93,7 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
   vs <- any(colnames(sources[[2]]) == "typeRating")
   showNames <- unique(sources[[2]]$showTitle)
   names(showNames) <- showNames
+
   plot <-  ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) 
 
   if(background)
