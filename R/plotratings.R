@@ -66,7 +66,7 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
 	   airDate <= maxDate) -> chosenShows
   if(chosenRating != "vs") {
     chosenShows %>%
-      filter(typeRating == "chosenRating",
+      filter(typeRating == chosenRating,
 	     rating >= minRating,
 	     rating <= maxRating) 
       select(-typeRating) -> chosenShows
