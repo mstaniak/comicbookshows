@@ -14,10 +14,10 @@ filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
   episodesPlus %>%
     filter(((showTitle == showNames[1] & season == seasons[1]) |
 	   (showTitle == showNames[2] & season == seasons[2])),
-	   imdbRating >= minRating,
-	   imdbRating <= maxRating) %>%
-    mutate(ep = paste(season, episode, sep = "x")) %>%
-    rename(rating = imdbRating)
+	   typeRating == "imdbRating",
+	   rating >= minRating,
+	   rating <= maxRating) %>%
+    mutate(ep = paste(season, episode, sep = "x"))
 }
 
 
