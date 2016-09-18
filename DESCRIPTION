@@ -14,5 +14,5 @@ Imports:
     rvest,
     lubridate,
     tibble,
-    lazyeval
+    tidyr
 RoxygenNote: 5.0.1
