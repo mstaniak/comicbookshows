@@ -36,7 +36,7 @@ plotNetflix <- function(sourceT, trend = FALSE) {
   nShow <- n_distinct(sourceT$showTitle)
   plot <- ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = rating)) +
             geom_point(size = 5, color = "white") +
-	    geom_line(aes(group = showTitle), linetype = 2, size = 2, color = "white")
+	    geom_line(aes(group = showTitle), linetype = 2, size = 2, color = "white") +
 	    theme_hc(bgcolor = "darkunica", base_size = 18) +
 	    scale_fill_hc("darkunica") +
 	    xlab("") +
