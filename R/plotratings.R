@@ -73,7 +73,6 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
   }
  
   return(list(otherShows, chosenShows))
-
 } 
 
 
@@ -102,8 +101,9 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 
   plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2, size = 1.5) +
 	         geom_point(size = 4) +
-                 theme_bw() +
-                 xlab("") +
+		 theme_hc(bgcolor = "darkunica") +
+		 scale_color_hc("darkunica") +             
+	         xlab("") +
                  ylab("")
   if(trend)
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
@@ -111,13 +111,13 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 
   if(nShow > 1) {
     plot <- plot + scale_color_discrete(name = "Show")
-   } else {
+  } else {
        plot <- plot +  guides(color = "none")
-     }
+  }
   if(vs & nShow == 1) {
     plot <- plot + facet_wrap(~typeRating, scales = "free", ncol = 1,
 			      labeller = as_labeller(c("imdbRating" = "IMDb ratings",
-						       "nielsenRating" = "Nielsen ratings")))
+						       "nielsenRating" = "Nielsen ratings"))) + theme(legend.position = "none") 
   }
 
   return(plot)
@@ -141,8 +141,9 @@ plotRatingsCompareVS <- function(sources, trend = FALSE) {
             geom_point(size = 4) +
 	    geom_line(aes(group = paste0(showTitle, season, typeRating)),
 		      linetype = 2, size = 1.5) +
-	    theme_bw() +
-	    scale_color_discrete(name = "Show") +
+            theme_hc(bgcolor = "darkunica") +
+            scale_color_hc("darkunica", name = "Show") +              
+# 	    scale_color_discrete(name = "Show") +
 	    xlab("") +
 	    ylab("") +
 	    facet_wrap(~typeRating, scales = "free", ncol = 1,

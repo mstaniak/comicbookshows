@@ -36,7 +36,8 @@ plotNetflix <- function(sourceT, trend = FALSE) {
   plot <- ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = rating)) +
             geom_point(size = 4) +
 	    geom_line(aes(group = showTitle), linetype = 2) +
-	    theme_bw() +
+	    theme_hc(bgcolor = "darkunica") +
+	    scale_fill_hc("darkunica") +
 	    xlab("") +
 	    ylab("") +
 	    facet_grid(~showTitle, scales = "free") 

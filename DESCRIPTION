@@ -14,5 +14,6 @@ Imports:
     rvest,
     lubridate,
     tibble,
-    tidyr
+    tidyr,
+    ggthemes
 RoxygenNote: 5.0.1
