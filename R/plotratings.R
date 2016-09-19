@@ -97,21 +97,20 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 
   if(background)
     plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating),
-                             inherit.aes = FALSE, color = "grey", size = 2)
+                             inherit.aes = FALSE, color = "grey", size = 1)
 
-  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2, size = 1.5) +
-	         geom_point(size = 4) +
-		 theme_hc(bgcolor = "darkunica") +
-		 scale_color_hc("darkunica") +             
+  plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2, size = 2) +
+	         geom_point(size = 5) +
+		 theme_hc(bgcolor = "darkunica", base_size = 18) +
+		 scale_color_hc("darkunica", name = "Show") +             
+		 scale_x_date(date_labels = "%m-%Y") +
 	         xlab("") +
                  ylab("")
   if(trend)
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)), method = "lm",
 			       se = FALSE, size = 1.5)
 
-  if(nShow > 1) {
-    plot <- plot + scale_color_discrete(name = "Show")
-  } else {
+  if(nShow == 1) {
        plot <- plot +  guides(color = "none")
   }
   if(vs & nShow == 1) {
@@ -119,6 +118,9 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 			      labeller = as_labeller(c("imdbRating" = "IMDb ratings",
 						       "nielsenRating" = "Nielsen ratings"))) + theme(legend.position = "none") 
   }
+
+  plot <- plot + theme(axis.text = element_text(color = "white"),
+		       plot.background = element_rect(fill = "#222222"))
 
   return(plot)
 }
@@ -138,12 +140,12 @@ plotRatingsCompareVS <- function(sources, trend = FALSE) {
   showNames <- unique(sources[[2]]$showTitle)
   names(showNames) <- showNames
   plot <- ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) +
-            geom_point(size = 4) +
+            geom_point(size = 5) +
 	    geom_line(aes(group = paste0(showTitle, season, typeRating)),
-		      linetype = 2, size = 1.5) +
-            theme_hc(bgcolor = "darkunica") +
-            scale_color_hc("darkunica", name = "Show") +              
-# 	    scale_color_discrete(name = "Show") +
+		      linetype = 2, size = 2) +
+            theme_hc(bgcolor = "darkunica", base_size = 18) +
+            scale_color_hc("darkunica", name = "Show") +             
+	    scale_x_date(date_labels = "%m-%Y") +
 	    xlab("") +
 	    ylab("") +
 	    facet_wrap(~typeRating, scales = "free", ncol = 1,
@@ -154,6 +156,10 @@ plotRatingsCompareVS <- function(sources, trend = FALSE) {
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)),
 			       method = "lm", se = FALSE, size = 1.5)
   }
+  
+  plot <- plot + theme(axis.text = element_text(color = "white"),
+		       plot.background = element_rect(fill = "#222222"))
+  
   return(plot)
 }
 

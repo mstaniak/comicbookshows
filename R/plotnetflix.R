@@ -33,19 +33,24 @@ filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
 #'
 
 plotNetflix <- function(sourceT, trend = FALSE) {
+  nShow <- n_distinct(sourceT$showTitle)
   plot <- ggplot(sourceT, aes(x = reorder(ep, as.integer(episode)), y = rating)) +
-            geom_point(size = 4) +
-	    geom_line(aes(group = showTitle), linetype = 2) +
-	    theme_hc(bgcolor = "darkunica") +
+            geom_point(size = 5, color = "white") +
+	    geom_line(aes(group = showTitle), linetype = 2, size = 2, color = "white")
+	    theme_hc(bgcolor = "darkunica", base_size = 18) +
 	    scale_fill_hc("darkunica") +
 	    xlab("") +
 	    ylab("") +
-	    facet_grid(~showTitle, scales = "free") 
-  
+	    facet_wrap(~showTitle, scales = "free", ncol = 1) 
+
   if(trend) {
     plot <- plot + geom_smooth(aes(group = paste(showTitle, season)), method = "lm",
 			       size = 1.5, se = FALSE)
   }
+  
+  plot <- plot + theme(axis.text = element_text(color = "white"),
+		       plot.background = element_rect(fill = "#222222"))
+  
   return(plot)
 }
 
