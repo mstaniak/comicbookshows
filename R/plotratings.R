@@ -43,7 +43,8 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
     as_date() -> dates
   
   episodesPlus %>%
-    filter(!(showTitle %in% showNames),
+    filter(showTitle != showNames[1],
+	   showTitle != showNames[2],
 	   airDate >= max(dates["firstEp"], minDate),
 	   airDate <= min(dates["lastEp"], maxDate),
 	   channel != "Netflix") -> otherShows
