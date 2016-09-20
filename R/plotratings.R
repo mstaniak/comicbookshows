@@ -112,7 +112,7 @@ plotRatings <- function(sources, background = FALSE, trend = FALSE, separate = F
   vs <- any(colnames(sources[[2]]) == "typeRating")
   showNames <- unique(sources[[2]]$showTitle)
   names(showNames) <- showNames
-  nSeason <- max(sources[[2]]$season)
+  nSeason <- max(as.integer(sources[[2]]$season))
   if(nShow == 2) {
     background <- FALSE
   }
