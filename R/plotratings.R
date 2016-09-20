@@ -29,16 +29,22 @@ changeWday <- function(actualDate, targetWday) {
 #'
 
 filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeasons, 1:defaultSeasons),
-                         minRating = 0, maxRating = 10,
-		         minDate = defaultMinDate, maxDate = defaultMaxDate) {
-  
+                         minRating = 0, maxRating = 10, minDate = defaultMinDate, maxDate = defaultMaxDate) {
+ 
+  nShow <- length(unique(showNames))
+  nSeason <- "1"
+  if(nShow == 1) {
+    nSeason <- length(seasons[[1]])
+  }
+
   episodesPlus %>%
     select(showTitle, airDate, season) %>%
     filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
 	    (showTitle == showNames[2] & season %in% seasons[[2]]))) %>%
-    select(-season) %>%
+#     group_by(season) %>%
     summarise(firstEp = min(airDate),
               lastEp = max(airDate)) %>%
+#     select(-season) %>%
     unlist() %>%
     as_date() -> dates
   
@@ -59,12 +65,14 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
     group_by(datePlot) %>%
     summarise(rating = mean(rating),
 	      noOfShows = n_distinct(showTitle)) -> otherShows
- 
+
   episodesPlus %>%
     filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
 	   (showTitle == showNames[2] & season %in% seasons[[2]])),
 	   airDate >= minDate,
-	   airDate <= maxDate) -> chosenShows
+	   airDate <= maxDate) %>%
+    select(-channel, -comic, -cancelled, -critics,
+	   -audience, -criticsAverage, -audienceAverage) -> chosenShows
   if(chosenRating != "vs") {
     chosenShows %>%
       filter(typeRating == chosenRating,
@@ -72,7 +80,19 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
 	     rating <= maxRating) %>% 
       select(-typeRating) -> chosenShows
   }
- 
+
+  if(nShow == 1 & nSeason > 1 ) {
+    otherShows$season <- apply(as.matrix(otherShows$datePlot), 1, {function(x)
+			       if(any(chosenShows$airDate == x)) {
+				 return(unique(chosenShows$season[chosenShows$airDate == x]))
+			       } else {
+				 return(NA)
+			       }
+	                  })
+    otherShows %>%
+      filter(!is.na(season)) -> otherShows
+  }
+  
   return(list(otherShows, chosenShows))
 } 
 
@@ -97,7 +117,7 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
   plot <-  ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) 
 
   if(background)
-    plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating),
+    plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating, group = season),
                              inherit.aes = FALSE, color = "grey", size = 1)
 
   plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2, size = 2) +
