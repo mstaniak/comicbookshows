@@ -38,7 +38,7 @@ getRatingsRT <- function(link) {
     html_text() %>%
     str_split(":[:space:]+") %>%
     unlist(use.names = FALSE) %>%
-    pickSec() -> avgRTaud
+    picSec() -> avgRTaud
 
   return(list(critics = cri,
               audience = aud,

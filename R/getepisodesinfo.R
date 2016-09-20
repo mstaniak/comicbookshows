@@ -11,7 +11,7 @@ oneEpisodeInfo <- function(epLink) {
   read_html(epLink) %>%
     html_node("#title-overview-widget") -> tmpPanel
 
-  tmpPanel %>%
+  tmPanel %>%
     html_node(".titleParent") %>%
     html_node("a") %>%
     html_text() -> showName
@@ -74,9 +74,9 @@ oneEpisodeInfo <- function(epLink) {
 
 getEpisodesInfo <- function(epLinks) {
   tmpResult <- data.frame(t(apply(data.frame(epLinks), 1, oneEpisodeInfo)), stringsAsFactors = F)
-  colnames(tmpResult) <- c("showTitle", "cancelled", "season", "episode", "airDate",
+  colnames(tmp_result) <- c("showTitle", "cancelled", "season", "episode", "airDate",
                             "title", "imdbRating", "numOfVotes")
-  tmpResult %>%
+  tmp_result %>%
     mutate(cancelled = as.logical(cancelled),
            rating = as.numeric(imdbRating),
            num_of_votes = as.integer(str_replace(numOfVotes, pattern = ",", replacement = ""))) %>%

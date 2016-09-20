@@ -29,6 +29,6 @@ getOneSeason <- function(season) {
 #'
 #' @export
 
-getEpisodesLinks <- function(seasons) {
+get_episodes_links <- function(seasons) {
   unlist(lapply(seasons, getOneSeason))
 }

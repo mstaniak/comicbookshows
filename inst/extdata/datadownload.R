@@ -31,9 +31,8 @@ seasonsNumber <- c("Agent Carter" = 2, "Agents of SHIELD" = 3, "Arrow" = 4, "Con
 # Download data.
 tmp <- data.frame(tvShows, seasonsNumber, stringsAsFactors = FALSE)
 setNames(split(tmp, seq(nrow(tmp))), rownames(tmp)) %>%
-  lapply(showsInfo, {function(x)
-                       return(getEpisodesInfo(
-                                getEpisodesLinks(getSeasonsLinks(x$tvShows, x$seasonsNumber))))}) %>%
+  lapply({function(x)
+    return(getEpisodesInfo( getEpisodesLinks(getSeasonsLinks(x$tvShows, x$seasonsNumber))))}) %>%
   bind_rows() %>%
   as_tibble() %>%
   filter(!is.na(episode)) -> shows
