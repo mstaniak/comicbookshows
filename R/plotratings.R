@@ -41,10 +41,8 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
     select(showTitle, airDate, season) %>%
     filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
 	    (showTitle == showNames[2] & season %in% seasons[[2]]))) %>%
-#     group_by(season) %>%
     summarise(firstEp = min(airDate),
               lastEp = max(airDate)) %>%
-#     select(-season) %>%
     unlist() %>%
     as_date() -> dates
   
@@ -102,23 +100,35 @@ filterToPlot <- function(showNames, chosenRating, seasons = list(1:defaultSeason
 #' @param sources list returned by filterToPlot function.
 #' @param background  logical, if TRUE, ratings for other shows will be displayed.
 #' @param trend logical, if TRUE, trend line for season is plotted.
+#' @param separated lgl, if TRUE, facets will be used.
 #'
 #' @return ggplot2 object.
 #'
 #' @export
 #'
 
-plotRatings <- function(sources, background = TRUE, trend = FALSE) {
+plotRatings <- function(sources, background = FALSE, trend = FALSE, separate = FALSE) {
   nShow <- n_distinct(sources[[2]]$showTitle)
   vs <- any(colnames(sources[[2]]) == "typeRating")
   showNames <- unique(sources[[2]]$showTitle)
   names(showNames) <- showNames
+  nSeason <- max(sources[[2]]$season)
+  if(nShow == 2) {
+    background <- FALSE
+  }
 
   plot <-  ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) 
 
-  if(background)
+  if(background & nSeason > 1) {
     plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating, group = season),
                              inherit.aes = FALSE, color = "grey", size = 1)
+  } else if(background & nSeason  == 1) {
+    plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating),
+			     inherit.aes = FALSE, color = "grey", size = 1)
+  } else if(background & nShow > 1) {
+    plot <- plot + geom_line(data = sources[[1]], aes(x = datePlot, y = rating, group = season),
+                             inherit.aes = FALSE, color = "grey", size = 1)
+  }
 
   plot <- plot + geom_line(aes(group = paste0(showTitle, season)), linetype = 2, size = 2) +
 	         geom_point(size = 5) +
@@ -132,16 +142,24 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 			       se = FALSE, size = 1.5)
 
   if(nShow == 1) {
-       plot <- plot +  guides(color = "none")
+       plot <- plot + guides(color = "none")
   }
   if(vs & nShow == 1) {
     plot <- plot + facet_wrap(~typeRating, scales = "free", ncol = 1,
 			      labeller = as_labeller(c("imdbRating" = "IMDb ratings",
 						       "nielsenRating" = "Nielsen ratings"))) + theme(legend.position = "none") 
   }
+  if(nShow == 1 & nSeason > 1 & separate) {
+    plot <- plot + facet_wrap(~season, scales = "free", ncol = 1)
+  }
+
+  if(nShow == 2 & separate) {
+    plot <- plot + facet_wrap(~showTitle, scales = "free", ncol = 1)
+  }
 
   plot <- plot + theme(axis.text = element_text(color = "white"),
-		       plot.background = element_rect(fill = "#222222"))
+		       plot.background = element_rect(fill = "#222222"),
+		       legend.position = "none")
 
   return(plot)
 }
@@ -150,16 +168,20 @@ plotRatings <- function(sources, background = TRUE, trend = FALSE) {
 #' Plot IMDb ratings vs Nielsen ratings for two shows.
 #' 
 #' @param sources Data frame returned by filterToPlot function.
-#' @param trend lgl, if TRUE, trend line will be displayed. 
+#' @param trend lgl, if TRUE, trend line will be displayed.
+#' @param separate lgl, if TRUE, shows will be displayed on separate panels.
 #'
 #' @return ggplot2 object.
 #'
 #' @export
 #'
 
-plotRatingsCompareVS <- function(sources, trend = FALSE) {
+plotRatingsCompareVS <- function(sources, trend = FALSE, separate = TRUE) {
   showNames <- unique(sources[[2]]$showTitle)
   names(showNames) <- showNames
+  rtNames <- c("imdbRating" = "IMDb ratings", "nielsenRating" = "Nielsen ratings")
+  nShow <- length(showNames)
+
   plot <- ggplot(sources[[2]], aes(x = airDate, y = rating, color = showTitle)) +
             geom_point(size = 5) +
 	    geom_line(aes(group = paste0(showTitle, season, typeRating)),
@@ -168,18 +190,27 @@ plotRatingsCompareVS <- function(sources, trend = FALSE) {
             scale_color_hc("darkunica", name = "Show") +             
 	    scale_x_date(date_labels = "%m-%Y") +
 	    xlab("") +
-	    ylab("") +
-	    facet_wrap(~typeRating, scales = "free", ncol = 1,
-		       labeller = as_labeller(c("imdbRating" = "IMDb ratings",
-						"nielsenRating" = "Nielsen ratings")))
-  
+	    ylab("")
+	 
   if(trend) {
     plot <- plot + geom_smooth(aes(group = paste0(showTitle, season)),
 			       method = "lm", se = FALSE, size = 1.5)
   }
-  
+
+  if(nShow == 1) {
+    plot <- plot + facet_wrap(~typeRating, scale = "free", ncol = 1,
+			      labeller = as_labeller(rtNames))
+  } else if(separate & nShow > 1) {
+    plot <- plot + facet_wrap(showTitle ~ typeRating, scales = "free",
+			      labeller = as_labeller(c(rtNames, showNames)))
+  } else if(!separate){
+    plot <- plot + facet_wrap(~typeRating, scales = "free",
+			      labeller = as_labeller(c(rtNames)))
+  }
+
   plot <- plot + theme(axis.text = element_text(color = "white"),
-		       plot.background = element_rect(fill = "#222222"))
+		       plot.background = element_rect(fill = "#222222"),
+		       legend.position = "none")
   
   return(plot)
 }

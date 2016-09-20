@@ -4,12 +4,14 @@
 \alias{plotRatingsCompareVS}
 \title{Plot IMDb ratings vs Nielsen ratings for two shows.}
 \usage{
-plotRatingsCompareVS(sources, trend = FALSE)
+plotRatingsCompareVS(sources, trend = FALSE, separate = TRUE)
 }
 \arguments{
 \item{sources}{Data frame returned by filterToPlot function.}
 
 \item{trend}{lgl, if TRUE, trend line will be displayed.}
+
+\item{separate}{lgl, if TRUE, shows will be displayed on separate panels.}
 }
 \value{
 ggplot2 object.

@@ -4,7 +4,7 @@
 \alias{plotRatings}
 \title{Plot IMDb ratings of one show.}
 \usage{
-plotRatings(sources, background = TRUE, trend = FALSE)
+plotRatings(sources, background = FALSE, trend = FALSE, separate = FALSE)
 }
 \arguments{
 \item{sources}{list returned by filterToPlot function.}
@@ -12,6 +12,8 @@ plotRatings(sources, background = TRUE, trend = FALSE)
 \item{background}{logical, if TRUE, ratings for other shows will be displayed.}
 
 \item{trend}{logical, if TRUE, trend line for season is plotted.}
+
+\item{separated}{lgl, if TRUE, facets will be used.}
 }
 \value{
 ggplot2 object.
