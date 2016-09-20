@@ -13,12 +13,13 @@
 
 filterNetflix <- function(showNames, seasons, minRating = 0, maxRating = 10) {
   episodesPlus %>%
-    filter(((showTitle == showNames[1] & season == seasons[[1]][1]) |
-	   (showTitle == showNames[2] & season == seasons[[2]][1])),
+    filter(((showTitle == showNames[1] & season %in% seasons[[1]]) |
+	   (showTitle == showNames[2] & season %in% seasons[[2]])),
 	   typeRating == "imdbRating",
 	   rating >= minRating,
 	   rating <= maxRating) %>%
-    mutate(ep = paste(season, episode, sep = "x"))
+    mutate(ep = paste(season, episode, sep = "x")) %>%
+    select(-viewers, -cancelled, -channel, -comic, -critics, -audience, -criticsAverage, -audienceAverage)
 }
 
 
@@ -40,8 +41,7 @@ plotNetflix <- function(sourceT, trend = FALSE) {
 	    theme_hc(bgcolor = "darkunica", base_size = 18) +
 	    scale_fill_hc("darkunica") +
 	    xlab("") +
-	    ylab("") +
-	    facet_wrap(~showTitle, scales = "free", ncol = 1) 
+	    ylab("")
 
   if(trend) {
     plot <- plot + geom_smooth(aes(group = paste(showTitle, season)), method = "lm",
@@ -50,6 +50,12 @@ plotNetflix <- function(sourceT, trend = FALSE) {
   
   plot <- plot + theme(axis.text = element_text(color = "white"),
 		       plot.background = element_rect(fill = "#222222"))
+
+  if(nShow == 1) {
+    plot <- plot + facet_wrap(~season, scale = "free", ncol = 1)
+  } else {
+    plot <- plot + facet_wrap(~showTitle, scale = "free", ncol = 1)
+  }
   
   return(plot)
 }

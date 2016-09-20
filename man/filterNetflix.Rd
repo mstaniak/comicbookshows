@@ -9,7 +9,8 @@ filterNetflix(showNames, seasons, minRating = 0, maxRating = 10)
 \arguments{
 \item{showNames}{chr, full titles of shows to plot.}
 
-\item{seasons}{chr, one season for each show in showNames.}
+\item{seasons}{list of two vectors with seasons, 
+only first element is used.}
 
 \item{minRating}{dbl, minimum rating to plot.}
 
