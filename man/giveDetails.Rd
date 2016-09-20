@@ -4,7 +4,7 @@
 \alias{giveDetails}
 \title{Text info about given episode.}
 \usage{
-giveDetails(filtData, click, typeRating, netflix = FALSE)
+giveDetails(filtData, click, typeRating)
 }
 \arguments{
 \item{filtData}{Data frame returned by filterToPlot function.}
@@ -12,8 +12,6 @@ giveDetails(filtData, click, typeRating, netflix = FALSE)
 \item{click}{shiny object returned on plot click.}
 
 \item{typeRating}{chr, "imdbRating" or "nielsenRating".}
-
-\item{netflix}{lgl, if TRUE, xvar will be "ep"}
 }
 \value{
 html with show name, episode's signature, episode's title,
