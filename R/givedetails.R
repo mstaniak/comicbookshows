@@ -27,16 +27,11 @@ giveDetails <- function(filtData, click, typeRating) {
 			   paste("Aired:", point[["airDate"]]),
 			   paste("Rating:", round(as.numeric(point[["rating"]]), 2)),
 			   sep = "<br />")
-      if(typeRating == "imdbRating") {
-	tooltipText <- paste(tooltipText,
-			     paste("Number of votes:", point[["numOfVotes"]]),
-			     sep = "<br />")
-
-      } else {
-	tooltipText <- paste(tooltipText,
+      if(typeRating == "nielsenRating") {
+        tooltipText <- paste(tooltipText,
 			     paste("Viewers in milions:", point[["viewers"]]),
 			     sep = "<br />")
-      }
+      } 
 	filtData[[1]] %>%
 	  filter(datePlot == point[["airDate"]]) -> greyLineInfo
 	if(dim(greyLineInfo)[1] != 0) {
@@ -81,7 +76,6 @@ giveShortDetails <- function(filtData, click, seasons) {
       point <- tmp[round(click$x), c("showTitle", "epTitle", "ep", "rating", "numOfVotes")]
       tooltipText <- paste(paste(point$showTitle, point$ep, point$epTitle),
 			   paste("Rating:", point$rating),
-			   paste("Number of votes:", point$numOfVotes),
 			   sep = "<br />")
     }
   }
